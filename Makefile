@@ -1,2 +1,2 @@
 all:
-	gcc -Wall -Werror main.c -o main
+	gcc -Wall -Werror catan.c -o catan
