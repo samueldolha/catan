@@ -13,7 +13,10 @@ typedef enum {
     ORE
 } Resource;
 
-static const int HEX_COUNT = 19;
+// An enum element can function as a constant expression for array sizing.
+enum {
+    HEX_COUNT = 19
+};
 
 static void shuffle(int[], const int);
 
@@ -82,7 +85,7 @@ int main(void)
 
 static void shuffle(int array[], const int length)
 {
-    int throwArray[length];
+    int *const throwArray = malloc(length * sizeof(int));
 
     for (int index = 0; index < length; index += 1)
     {
@@ -95,6 +98,8 @@ static void shuffle(int array[], const int length)
         array[index] = throwArray[randomIndex];
         throwArray[randomIndex] = throwArray[length - index - 1];
     }
+
+    free(throwArray);
 }
 
 static void fixNoneIndex(const Resource resources[], int numbers[])
