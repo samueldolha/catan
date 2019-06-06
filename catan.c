@@ -6,12 +6,12 @@
 
 typedef enum
 {
-    NONE,
-    LUMBER,
-    BRICK,
-    WOOL,
-    GRAIN,
-    ORE
+    RESOURCE_NONE,
+    RESOURCE_LUMBER,
+    RESOURCE_BRICK,
+    RESOURCE_WOOL,
+    RESOURCE_GRAIN,
+    RESOURCE_ORE
 } Resource;
 
 // An enum element can function as a constant expression for array sizing.
@@ -34,25 +34,25 @@ int main(void)
 
     Resource resources[HEX_COUNT] =
     {
-        NONE,
-        LUMBER,
-        LUMBER,
-        LUMBER,
-        LUMBER,
-        BRICK,
-        BRICK,
-        BRICK,
-        WOOL,
-        WOOL,
-        WOOL,
-        WOOL,
-        GRAIN,
-        GRAIN,
-        GRAIN,
-        GRAIN,
-        ORE,
-        ORE,
-        ORE
+        RESOURCE_NONE,
+        RESOURCE_LUMBER,
+        RESOURCE_LUMBER,
+        RESOURCE_LUMBER,
+        RESOURCE_LUMBER,
+        RESOURCE_BRICK,
+        RESOURCE_BRICK,
+        RESOURCE_BRICK,
+        RESOURCE_WOOL,
+        RESOURCE_WOOL,
+        RESOURCE_WOOL,
+        RESOURCE_WOOL,
+        RESOURCE_GRAIN,
+        RESOURCE_GRAIN,
+        RESOURCE_GRAIN,
+        RESOURCE_GRAIN,
+        RESOURCE_ORE,
+        RESOURCE_ORE,
+        RESOURCE_ORE
     };
     int numbers[HEX_COUNT] =
     {
@@ -108,7 +108,7 @@ static void fixNoneIndex(const Resource resources[], int numbers[])
 {
     int noneIndex = 0;
 
-    while (resources[noneIndex] != NONE)
+    while (resources[noneIndex] != RESOURCE_NONE)
     {
         noneIndex += 1;
     }
