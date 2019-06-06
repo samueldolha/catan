@@ -22,7 +22,7 @@ static void shuffle(int[], const int);
 
 static void fixNoneIndex(const Resource[HEX_COUNT], int[]);
 
-static void printIsland(const Resource[HEX_COUNT], const int[HEX_COUNT - 1]);
+static void printIsland(const Resource[HEX_COUNT], const int[HEX_COUNT]);
 
 static int getDigit(const int, const int);
 
