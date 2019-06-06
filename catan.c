@@ -4,7 +4,8 @@
 #include <string.h>
 #include <sys/time.h>
 
-typedef enum {
+typedef enum
+{
     NONE,
     LUMBER,
     BRICK,
@@ -14,7 +15,8 @@ typedef enum {
 } Resource;
 
 // An enum element can function as a constant expression for array sizing.
-enum {
+enum
+{
     HEX_COUNT = 19
 };
 
@@ -121,7 +123,8 @@ static void fixNoneIndex(const Resource resources[], int numbers[])
 
 static void printIsland(
     const Resource resources[HEX_COUNT],
-    const int numbers[HEX_COUNT])
+    const int numbers[HEX_COUNT]
+)
 {
     // String lengths account for null-terminating character.
     static const char horizontalSpace[5] = "    ";
@@ -175,22 +178,27 @@ static void printIsland(
         }
     };
 
-    printf("%s%s%s%s%s%s\n",
+    printf(
+        "%s%s%s%s%s%s\n",
         verticalSpace,
         horizontalSpace,
         verticalSpace,
         horizontalSpace,
         verticalSpace,
-        horizontalEdge);
-    printf("%s%s%s%s%s%s%s\n",
+        horizontalEdge
+    );
+    printf(
+        "%s%s%s%s%s%s%s\n",
         verticalSpace,
         horizontalSpace,
         verticalSpace,
         horizontalSpace,
         inclineEdge[0],
         schema[resources[0]][0],
-        declineEdge[0]);
-    printf("%s%s%s%s%s%s%d%s%s\n",
+        declineEdge[0]
+    );
+    printf(
+        "%s%s%s%s%s%s%d%s%s\n",
         verticalSpace,
         horizontalSpace,
         verticalSpace,
@@ -199,8 +207,10 @@ static void printIsland(
         schema[resources[0]][1], 
         getDigit(numbers[0], 2),
         "\\",
-        horizontalEdge);
-    printf("%s%s%s%s%s%s%d%s%s%s\n",
+        horizontalEdge
+    );
+    printf(
+        "%s%s%s%s%s%s%d%s%s%s\n",
         verticalSpace,
         horizontalSpace,
         inclineEdge[0],
@@ -210,8 +220,10 @@ static void printIsland(
         getDigit(numbers[0], 1),
         "/",
         schema[resources[2]][0],
-        declineEdge[0]);
-    printf("%s%s%s%s%d%s%s%s%s%d%s%s\n",
+        declineEdge[0]
+    );
+    printf(
+        "%s%s%s%s%d%s%s%s%s%d%s%s\n",
         verticalSpace,
         horizontalEdge,
         inclineEdge[1],
@@ -223,7 +235,8 @@ static void printIsland(
         schema[resources[2]][1],
         getDigit(numbers[2], 2),
         "\\",
-        horizontalEdge);
+        horizontalEdge
+    );
 
     for (int offset = 0; offset < 15; offset += 5)
     {
@@ -255,7 +268,8 @@ static void printIsland(
         const int lowerRightResource = resources[lowerRightIndex];
         const int lowerRightNumber = numbers[lowerRightIndex];
 
-        printf("%s%s%s%s%d%s%s%s%s%d%s%s%s\n",
+        printf(
+            "%s%s%s%s%d%s%s%s%s%d%s%s%s\n",
             inclineEdge[0],
             schema[middleLeftResource][0],
             declineEdge[0],
@@ -268,8 +282,10 @@ static void printIsland(
             getDigit(upperRightNumber, 1),
             "/",
             schema[middleRightResource][0],
-            declineEdge[0]);
-        printf("%s%s%d%s%s%s%s%d%s%s%s%s%d%s\n",
+            declineEdge[0]
+        );
+        printf(
+            "%s%s%d%s%s%s%s%d%s%s%s%s%d%s\n",
             inclineEdge[1],
             schema[middleLeftResource][1],
             getDigit(middleLeftNumber, 2),
@@ -283,8 +299,10 @@ static void printIsland(
             inclineEdge[1],
             schema[middleRightResource][1],
             getDigit(middleRightNumber, 2),
-            "\\");
-        printf("%s%s%d%s%s%s%s%d%s%s%s%s%d%s\n",
+            "\\"
+        );
+        printf(
+            "%s%s%d%s%s%s%s%d%s%s%s%s%d%s\n",
             declineEdge[0],
             schema[middleLeftResource][2],
             getDigit(middleLeftNumber, 1),
@@ -298,8 +316,10 @@ static void printIsland(
             declineEdge[0],
             schema[middleRightResource][2],
             getDigit(middleRightNumber, 1),
-            "/");
-        printf("%s%s%s%s%d%s%s%s%s%d%s%s%s\n",
+            "/"
+        );
+        printf(
+            "%s%s%s%s%d%s%s%s%s%d%s%s%s\n",
             declineEdge[1],
             horizontalEdge,
             inclineEdge[1],
@@ -312,10 +332,12 @@ static void printIsland(
             getDigit(lowerRightNumber, 2),
             "\\",
             horizontalEdge,
-            inclineEdge[1]);
+            inclineEdge[1]
+        );
     }
 
-    printf("%s%s%s%s%d%s%s%s%s%d%s\n",
+    printf(
+        "%s%s%s%s%d%s%s%s%s%d%s\n",
         verticalSpace,
         horizontalSpace,
         declineEdge[0],
@@ -326,8 +348,10 @@ static void printIsland(
         declineEdge[0],
         schema[resources[17]][2],
         getDigit(numbers[17], 1),
-        "/");
-    printf("%s%s%s%s%s%s%d%s%s%s\n",
+        "/"
+    );
+    printf(
+        "%s%s%s%s%s%s%d%s%s%s\n",
         verticalSpace,
         horizontalSpace,
         declineEdge[1],
@@ -337,8 +361,10 @@ static void printIsland(
         getDigit(numbers[18], 2),
         "\\",
         horizontalEdge,
-        inclineEdge[1]);
-    printf("%s%s%s%s%s%s%d%s\n",
+        inclineEdge[1]
+    );
+    printf(
+        "%s%s%s%s%s%s%d%s\n",
         verticalSpace,
         horizontalSpace,
         verticalSpace,
@@ -346,15 +372,18 @@ static void printIsland(
         declineEdge[0],
         schema[resources[18]][2],
         getDigit(numbers[18], 1),
-        "/");
-    printf("%s%s%s%s%s%s%s\n",
+        "/"
+    );
+    printf(
+        "%s%s%s%s%s%s%s\n",
         verticalSpace,
         horizontalSpace,
         verticalSpace,
         horizontalSpace,
         declineEdge[1],
         horizontalEdge,
-        inclineEdge[1]);
+        inclineEdge[1]
+    );
 }
 
 static int getDigit(const int number, const int place)
