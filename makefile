@@ -2,7 +2,7 @@
 run: catan
 	./catan.exe
 
-catan:
+catan: catan.c
 	gcc -Wall -Werror catan.c -o catan.exe
 
 .PHONY: clean
