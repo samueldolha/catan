@@ -6,19 +6,13 @@ render-window
 run-application
 endef
 
-define flags
+define compilerFlags
 g
 pedantic
 std=c11
 Wall
 Werror
 Wextra
-endef
-
-define libraries
-glew32
-glfw3
-opengl32
 endef
 
 executableDirectory ::= bin/
@@ -31,12 +25,20 @@ formatFiles = $(addprefix $(1),$(addsuffix $(2),$(3)))
 sourceFiles ::= $(call formatFiles,src/,.c,$(files))
 headerFiles ::= $(call formatFiles,include/,.h,$(filter-out main,$(files)))
 
+ifeq ($(OS),Windows_NT)
+	libraryFlags ::= -lglew32 -lglfw3 -lopengl32
+else
+	ifeq ($(shell uname -s),Darwin)
+		libraryFlags ::= -framework OpenGL -lglew -lglfw
+	endif
+endif
+
 $(pathToExecutable): $(sourceFiles) $(headerFiles)
 	if [ ! -d $(executableDirectory) ]; then mkdir -p $(executableDirectory); fi
 	gcc -o $@ \
 	$(sourceFiles) \
-	$(addprefix -,$(flags)) \
-	-Iinclude/ $(addprefix -l,$(libraries))
+	$(addprefix -,$(compilerFlags)) \
+	-Iinclude/ $(libraryFlags)
 
 .PHONY: run
 run: $(pathToExecutable)
