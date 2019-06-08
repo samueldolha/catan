@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "execute-program.h"
+#include "render-program.h"
 
 static void checkShader(const GLuint shaderIdentifier)
 {
@@ -71,7 +72,6 @@ static void checkProgram(const GLuint programIdentifier)
 
 static void compileProgram(
     GLFWwindow *const window,
-    const Execute execute,
     const GLuint vertexShaderIdentifier,
     const GLuint fragmentShaderIdentifier
 )
@@ -83,38 +83,32 @@ static void compileProgram(
     glDetachShader(programIdentifier, fragmentShaderIdentifier);
     glDetachShader(programIdentifier, vertexShaderIdentifier);
     checkProgram(programIdentifier);
-    execute(window, programIdentifier);
+    renderProgram(window, programIdentifier);
     glDeleteProgram(programIdentifier);
 }
 
 static void compileFragmentShader(
     GLFWwindow *const window,
-    const Execute execute,
     const GLuint vertexShaderIdentifier
 )
 {
     const GLuint fragmentShaderIdentifier = glCreateShader(GL_FRAGMENT_SHADER);
     loadPath(fragmentShaderIdentifier, "shader.frag");
     glCompileShader(fragmentShaderIdentifier);
-    compileProgram(
-        window,
-        execute,
-        vertexShaderIdentifier,
-        fragmentShaderIdentifier
-    );
+    compileProgram(window, vertexShaderIdentifier, fragmentShaderIdentifier);
     glDeleteShader(fragmentShaderIdentifier);
 }
 
-static void compileVertexShader(GLFWwindow *const window, const Execute execute)
+static void compileVertexShader(GLFWwindow *const window)
 {
     const GLuint vertexShaderIdentifier = glCreateShader(GL_VERTEX_SHADER);
     loadPath(vertexShaderIdentifier, "shader.vert");
     glCompileShader(vertexShaderIdentifier);
-    compileFragmentShader(window, execute, vertexShaderIdentifier);
+    compileFragmentShader(window, vertexShaderIdentifier);
     glDeleteShader(vertexShaderIdentifier);
 }
 
-void executeProgram(GLFWwindow *const window, const Execute execute)
+void executeProgram(GLFWwindow *const window)
 {
-    compileVertexShader(window, execute);
+    compileVertexShader(window);
 }

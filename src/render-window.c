@@ -1,12 +1,7 @@
 #include "execute-program.h"
 #include "render-window.h"
 
-void renderWindow(
-    const int width,
-    const int height,
-    const char title[],
-    void (*const render)(GLFWwindow *const, GLuint)
-)
+void renderWindow(const int width, const int height, const char title[])
 {
     GLFWwindow *const window = glfwCreateWindow(
         width,
@@ -23,7 +18,7 @@ void renderWindow(
         glewInit();
         glfwSwapInterval(1);
 
-        executeProgram(window, render);
+        executeProgram(window);
 
         glfwDestroyWindow(window);
     }

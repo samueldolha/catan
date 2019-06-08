@@ -3,9 +3,4 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-void renderWindow(
-    const int,
-    const int,
-    const char[],
-    void(GLFWwindow *const, GLuint)
-);
+void renderWindow(const int, const int, const char[]);
