@@ -1,4 +1,4 @@
-#version 460 core
+#version 410 core
 
 // Ouput data
 out vec3 color;
