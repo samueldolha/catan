@@ -5,7 +5,7 @@ void renderWindow(
     const int width,
     const int height,
     const char title[],
-    void (*const renderProgram)(GLFWwindow *const, GLuint)
+    void (*const render)(GLFWwindow *const, GLuint)
 )
 {
     GLFWwindow *const window = glfwCreateWindow(
@@ -23,7 +23,7 @@ void renderWindow(
         glewInit();
         glfwSwapInterval(1);
 
-        executeProgram(window, renderProgram);
+        executeProgram(window, render);
 
         glfwDestroyWindow(window);
     }
