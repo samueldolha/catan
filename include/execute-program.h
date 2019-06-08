@@ -3,4 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-void executeProgram(GLFWwindow *const, void(GLFWwindow *const, GLuint));
+typedef void (*Execute)(GLFWwindow *const, GLuint);
+
+void executeProgram(GLFWwindow *const, const Execute);

@@ -69,8 +69,6 @@ static void checkProgram(const GLuint programIdentifier)
     }
 }
 
-typedef void (*Execute)(GLFWwindow *const, GLuint);
-
 static void compileProgram(
     GLFWwindow *const window,
     const Execute execute,
