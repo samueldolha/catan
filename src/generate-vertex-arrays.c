@@ -4,11 +4,19 @@
 
 void generateVertexArrays(Vertex *const vertexArrays[])
 {
-    for (size_t polygonIndex = 0; polygonIndex < polygonCount; polygonIndex += 1)
+    for (
+        size_t polygonIndex = 0;
+        polygonIndex < polygonCount;
+        polygonIndex += 1
+    )
     {
         Vertex *const vertices = vertexArrays[polygonIndex];
 
-        for (size_t vertexIndex = 0; vertexIndex < vertexCount; vertexIndex += 1)
+        for (
+            size_t vertexIndex = 0;
+            vertexIndex < vertexCount;
+            vertexIndex += 1
+        )
         {
             static const TwoDimensionalVector vertexPositions[vertexCount] =
             {
@@ -55,9 +63,12 @@ void generateVertexArrays(Vertex *const vertexArrays[])
                 { 0.5, 0.0 }
             };
 
-            vertices[vertexIndex].vertexPosition.x = 0.2 * (vertexPositions[vertexIndex].x + offsets[polygonIndex].x);
-            vertices[vertexIndex].vertexPosition.y = 0.25 * (vertexPositions[vertexIndex].y + offsets[polygonIndex].y);
-            vertices[vertexIndex].texturePosition = texturePositions[vertexIndex];
+            vertices[vertexIndex].vertexPosition.x = 0.2
+                * (vertexPositions[vertexIndex].x + offsets[polygonIndex].x);
+            vertices[vertexIndex].vertexPosition.y = 0.25
+                * (vertexPositions[vertexIndex].y + offsets[polygonIndex].y);
+            vertices[vertexIndex].texturePosition =
+                texturePositions[vertexIndex];
         }
     }
 }
