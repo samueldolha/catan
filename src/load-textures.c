@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <tiffio.h>
 
 #include "load-textures.h"

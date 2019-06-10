@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "generate-vertex-arrays.h"
 #include "polygon-count.h"
 #include "vertex-count.h"
