@@ -1,55 +1,213 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <stddef.h>
+#include <stdlib.h>
 
+#include "generate-vertex-arrays.h"
+#include "load-textures.h"
+#include "polygon.h"
+#include "polygon-count.h"
 #include "render-program.h"
+#include "texture.h"
+#include "texture-count.h"
+#include "vertex-count.h"
 
-static void updateViewport(GLFWwindow *const window)
-{
-    int width = 0;
-    int height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-}
-
-void renderProgram(
+static void renderIsland(
     GLFWwindow *const window,
-    const GLuint programIdentifier
+    const GLuint programIdentifier,
+    const Polygon polygons[]
 )
 {
-    static const GLfloat vertices[] =
-    {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f
-    };
-
-    GLuint vertexArrayIdentifier = 0;
-    glGenVertexArrays(1, &vertexArrayIdentifier);
-    glBindVertexArray(vertexArrayIdentifier);
-
-    GLuint vertexBufferIdentifier = 0;
-    glGenBuffers(1, &vertexBufferIdentifier);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferIdentifier);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    const GLint textureSampler = glGetUniformLocation(
+        programIdentifier,
+        "textureSampler"
+    );
 
     while (!glfwWindowShouldClose(window))
     {
-        updateViewport(window);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(programIdentifier);
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferIdentifier);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDisableVertexAttribArray(0);
+        for (size_t index = 0; index < polygonCount; index += 1)
+        {
+            const Polygon polygon = polygons[index];
+            glActiveTexture(GL_TEXTURE0 + polygon.texture.unitIndex);
+            glBindTexture(GL_TEXTURE_2D, polygon.texture.identifier);
+            glUniform1i(textureSampler, polygon.texture.unitIndex);
+            glBindVertexArray(polygon.objects.vertexArrayIdentifier);
+            glDrawElements(
+                GL_TRIANGLES,
+                (sizeof(Vertex) / sizeof(GLfloat)) * polygon.vertices.count,
+                GL_UNSIGNED_INT,
+                0
+            );
+            glBindVertexArray(0);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+}
 
-    glDeleteBuffers(1, &vertexBufferIdentifier);
+static void renderPolygons(
+    GLFWwindow *const window,
+    const GLuint programIdentifier,
+    const Polygon polygons[]
+)
+{
+    static const GLuint vertexPositionIndex = 0;
+    static const GLuint texturePositionIndex = 1;
 
-    glDeleteVertexArrays(1, &vertexArrayIdentifier);
+    for (size_t index = 0; index < polygonCount; index += 1)
+    {
+        const Polygon polygon = polygons[index];
+        glBindVertexArray(polygon.objects.vertexArrayIdentifier);
+        glBindBuffer(GL_ARRAY_BUFFER, polygon.objects.vertexBufferIdentifier);
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            polygon.vertices.count * sizeof(Vertex),
+            polygon.vertices.data,
+            GL_STATIC_DRAW
+        );
+        glBindBuffer(
+            GL_ELEMENT_ARRAY_BUFFER, polygon.objects.indexBufferIdentifier
+        );
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,
+            polygon.indices.count * sizeof(TriangleIndex),
+            polygon.indices.data,
+            GL_STATIC_DRAW
+        );
+        glEnableVertexAttribArray(vertexPositionIndex);
+        glVertexAttribPointer(
+            vertexPositionIndex,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            (GLvoid *const)0
+        );
+        glEnableVertexAttribArray(texturePositionIndex);
+        glVertexAttribPointer(
+            texturePositionIndex,
+            2,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            (GLvoid *const)offsetof(Vertex, texturePosition)
+        );
+    }
+
+    renderIsland(window, programIdentifier, polygons);
+
+    glDisableVertexAttribArray(texturePositionIndex);
+    glDisableVertexAttribArray(vertexPositionIndex);
+}
+
+void renderProgram(GLFWwindow *const window, const GLuint programIdentifier)
+{
+    GLuint *const vertexArrayIdentifiers = calloc(polygonCount, sizeof(GLuint));
+    GLuint *const vertexBufferIdentifiers = calloc(
+        polygonCount,
+        sizeof(GLuint)
+    );
+    GLuint *const indexBufferIdentifiers = calloc(polygonCount, sizeof(GLuint));
+    glGenVertexArrays(polygonCount, vertexArrayIdentifiers);
+    glGenBuffers(polygonCount, vertexBufferIdentifiers);
+    glGenBuffers(polygonCount, indexBufferIdentifiers);
+
+    Vertex **const vertexArrays = calloc(
+        polygonCount,
+        sizeof(Vertex*)
+    );
+
+    for (size_t index = 0; index < polygonCount; index += 1)
+    {
+        vertexArrays[index] = calloc(vertexCount, sizeof(Vertex));
+    }
+
+    generateVertexArrays(vertexArrays);
+
+    GLuint *const textureIdentifiers = calloc(textureCount, sizeof(GLuint));
+    glGenTextures(textureCount, textureIdentifiers);
+    Texture *textures = calloc(textureCount, sizeof(Texture));
+    loadTextures(textures, textureIdentifiers);
+
+    Texture *const polygonTextures = calloc(polygonCount, sizeof(Texture));
+    polygonTextures[0] = textures[4];
+    polygonTextures[1] = textures[5];
+    polygonTextures[2] = textures[5];
+    polygonTextures[3] = textures[2];
+    polygonTextures[4] = textures[5];
+    polygonTextures[5] = textures[3];
+    polygonTextures[6] = textures[1];
+    polygonTextures[7] = textures[0];
+    polygonTextures[8] = textures[0];
+    polygonTextures[9] = textures[3];
+    polygonTextures[10] = textures[5];
+    polygonTextures[11] = textures[1];
+    polygonTextures[12] = textures[2];
+    polygonTextures[13] = textures[1];
+    polygonTextures[14] = textures[4];
+    polygonTextures[15] = textures[2];
+    polygonTextures[16] = textures[1];
+    polygonTextures[17] = textures[5];
+    polygonTextures[18] = textures[5];
+
+    Polygon *const polygons = calloc(polygonCount, sizeof(Polygon));
+
+    for (size_t index = 0; index < polygonCount; index += 1)
+    {
+        enum
+        {
+            indexCount = 8
+        };
+
+        static const TriangleIndex indices[indexCount] =
+        {
+            { 0, 1, 2 },
+            { 0, 2, 3 },
+            { 1, 2, 5 },
+            { 1, 4, 5 },
+            { 2, 3, 5 },
+            { 3, 5, 6 },
+            { 4, 5, 7 },
+            { 5, 6, 7 }
+        };
+
+        polygons[index].objects.vertexArrayIdentifier =
+            vertexArrayIdentifiers[index];
+        polygons[index].objects.vertexBufferIdentifier =
+            vertexBufferIdentifiers[index];
+        polygons[index].objects.indexBufferIdentifier =
+            indexBufferIdentifiers[index];
+        polygons[index].vertices.data = vertexArrays[index];
+        polygons[index].vertices.count = vertexCount;
+        polygons[index].indices.data = indices;
+        polygons[index].indices.count = indexCount;
+        polygons[index].texture = polygonTextures[index];
+    }
+
+    renderPolygons(window, programIdentifier, polygons);
+
+    free(polygons);
+
+    free(polygonTextures);
+
+    glDeleteTextures(textureCount, textureIdentifiers);
+
+    for (size_t index = 0; index < polygonCount; index += 1)
+    {
+        free(vertexArrays[index]);
+    }
+
+    free(vertexArrays);
+
+    glDeleteVertexArrays(polygonCount, vertexArrayIdentifiers);
+    free(vertexArrayIdentifiers);
+    glDeleteBuffers(polygonCount, vertexBufferIdentifiers);
+    free(vertexBufferIdentifiers);
+    glDeleteBuffers(polygonCount, indexBufferIdentifiers);
+    free(indexBufferIdentifiers);
 }

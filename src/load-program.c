@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "execute-program.h"
+#include "load-program.h"
 #include "render-program.h"
 
 static void checkShader(const GLuint shaderIdentifier)
@@ -46,11 +46,11 @@ static void loadFile(const GLuint shaderIdentifier, const char path[])
 
 static void loadPath(const GLuint shaderIdentifier, const char filename[])
 {
-    static const char pathToAssets[] = "./assets/";
+    static const char pathToShaders[] = "./shaders/";
     char *const pathToFile = malloc(
-        strlen(pathToAssets) + strlen(filename) + 1
+        strlen(pathToShaders) + strlen(filename) + 1
     );
-    strcpy(pathToFile, pathToAssets);
+    strcpy(pathToFile, pathToShaders);
     strcat(pathToFile, filename);
     loadFile(shaderIdentifier, pathToFile);
     free(pathToFile);
@@ -108,7 +108,7 @@ static void compileVertexShader(GLFWwindow *const window)
     glDeleteShader(vertexShaderIdentifier);
 }
 
-void executeProgram(GLFWwindow *const window)
+void loadProgram(GLFWwindow *const window)
 {
     compileVertexShader(window);
 }
