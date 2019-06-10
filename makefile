@@ -1,32 +1,3 @@
-define sourceFiles
-generate-island
-generate-vertex-arrays
-load-program
-load-textures
-main
-render-program
-render-window
-run-application
-endef
-
-define headerFiles
-generate-island
-generate-vertex-arrays
-load-program
-load-textures
-polygon
-polygon-count
-render-program
-render-window
-run-application
-texture
-texture-count
-three-dimensional-vector
-triangle-index
-two-dimensional-vector
-vertex
-endef
-
 define compilerFlags
 g
 pedantic
@@ -42,9 +13,8 @@ pathToExecutable ::= $(executableDirectory)catan.exe
 .PHONY: all
 all: $(pathToExecutable)
 
-formatFiles = $(addprefix $(1),$(addsuffix $(2),$(3)))
-formattedSourceFiles ::= $(call formatFiles,src/,.c,$(sourceFiles))
-formattedHeaderFiles ::= $(call formatFiles,include/,.h,$(headerFiles))
+sourceFiles ::= $(shell ls src/*)
+headerFiles ::= $(shell ls include/*)
 
 ifeq ($(OS),Windows_NT)
 	libraryFlags ::= -lglew32 -lglfw3 -lopengl32 -ltiff
@@ -54,10 +24,10 @@ else
 	endif
 endif
 
-$(pathToExecutable): $(formattedSourceFiles) $(formattedHeaderFiles)
+$(pathToExecutable): $(sourceFiles) $(headerFiles)
 	if [ ! -d $(executableDirectory) ]; then mkdir -p $(executableDirectory); fi
 	gcc -o $@ \
-	$(formattedSourceFiles) \
+	$(sourceFiles) \
 	$(addprefix -,$(compilerFlags)) \
 	-Iinclude/ $(libraryFlags)
 

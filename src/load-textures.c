@@ -44,7 +44,18 @@ void loadTextures(Texture textures[], GLuint textureIdentifiers[])
         "./textures/pasture.tif",
         "./textures/field.tif",
         "./textures/mountain.tif",
-        "./textures/desert.tif"
+        "./textures/desert.tif",
+
+        "./textures/two.tif",
+        "./textures/three.tif",
+        "./textures/four.tif",
+        "./textures/five.tif",
+        "./textures/six.tif",
+        "./textures/eight.tif",
+        "./textures/nine.tif",
+        "./textures/ten.tif",
+        "./textures/eleven.tif",
+        "./textures/twelve.tif",
     };
 
     for (size_t index = 0; index < textureCount; index += 1)

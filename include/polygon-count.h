@@ -1,6 +1,9 @@
 #pragma once
 
+#include "hex-count.h"
+#include "token-count.h"
+
 enum
 {
-    polygonCount = 19
+    polygonCount = hexCount + tokenCount
 };

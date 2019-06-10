@@ -2,5 +2,5 @@
 
 enum
 {
-    vertexCount = 8
+    hexCount = 19
 };

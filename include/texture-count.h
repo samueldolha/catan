@@ -2,5 +2,5 @@
 
 enum
 {
-    textureCount = 6
+    textureCount = 6 + 10
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "texture.h"
 
-void generateIsland(const Texture[], Texture[]);
+size_t generateIsland(const Texture[], Texture[]);
