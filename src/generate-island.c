@@ -1,9 +1,12 @@
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "generate-island.h"
 #include "hex-count.h"
 #include "polygon-count.h"
+#include "red-token-count.h"
 #include "token-count.h"
 
 typedef enum
@@ -47,6 +50,135 @@ static void shuffleArray(int array[], const int length)
     }
 
     free(temporaryArray);
+}
+
+static bool arrayContains(
+    const size_t array[redTokenCount],
+    const size_t number
+)
+{
+    for (size_t index = 0; index < redTokenCount; index += 1)
+    {
+        if (array[index] == number)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool hasAdjacentRedTokens(const size_t redTokenIndices[redTokenCount])
+{
+    for (size_t index = 0; index < redTokenCount; index += 1)
+    {
+        const size_t redTokenIndex = redTokenIndices[index];
+
+        if (
+            (redTokenIndex < 3
+                && (
+                    (
+                        redTokenIndex > 0
+                        && arrayContains(redTokenIndices, redTokenIndex - 1)
+                    )
+                    || (redTokenIndex < 2
+                        && arrayContains(redTokenIndices, redTokenIndex + 1)
+                    ) || (arrayContains(redTokenIndices, redTokenIndex + 3))
+                    || (arrayContains(redTokenIndices, redTokenIndex + 4))
+                )
+            ) || (redTokenIndex < 7
+                && (
+                    (redTokenIndex > 3
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex - 1)
+                            || arrayContains(redTokenIndices, redTokenIndex - 4)
+                        )
+                    ) || (redTokenIndex < 6
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex + 1)
+                            || arrayContains(redTokenIndices, redTokenIndex - 3)
+                        )
+                    ) || (arrayContains(redTokenIndices, redTokenIndex + 4))
+                    || (arrayContains(redTokenIndices, redTokenIndex + 5))
+                )
+            ) || (redTokenIndex < 12
+                && (
+                    (redTokenIndex > 7
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex - 1)
+                            || arrayContains(redTokenIndices, redTokenIndex - 5)
+                            || arrayContains(redTokenIndices, redTokenIndex + 4)
+                        )
+                    ) || (redTokenIndex < 11
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex + 1)
+                            || arrayContains(redTokenIndices, redTokenIndex - 4)
+                            || arrayContains(redTokenIndices, redTokenIndex + 5)
+                        )
+                    )
+                )
+            ) || (
+                redTokenIndex < 16
+                && (
+                    (
+                        redTokenIndex > 12
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex - 1)
+                            || arrayContains(redTokenIndices, redTokenIndex + 3)
+                        )
+                    ) || (
+                        redTokenIndex < 15
+                        && (
+                            arrayContains(redTokenIndices, redTokenIndex + 1)
+                            || arrayContains(redTokenIndices, redTokenIndex + 4)
+                        )
+                    ) || arrayContains(redTokenIndices, redTokenIndex - 5)
+                    || arrayContains (redTokenIndices, redTokenIndex - 4)
+                )
+            ) || (
+                (redTokenIndex > 16
+                    && arrayContains(redTokenIndices, redTokenIndex - 1)
+                ) || (redTokenIndex < 18
+                    && arrayContains(redTokenIndices, redTokenIndex + 1)
+                ) || (arrayContains(redTokenIndices, redTokenIndex - 4))
+                || (arrayContains(redTokenIndices, redTokenIndex - 3))
+            )
+        )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool isValidIsland(
+    const Token tokens[tokenCount], 
+    const size_t indexOfDesertHex
+)
+{
+    size_t redTokenIndices[redTokenCount] = { 0, 0, 0, 0 };
+    size_t foundRedTokenCount = 0;
+
+    size_t indexOffset = 0;
+
+    for (size_t index = 0; index < tokenCount; index += 1)
+    {
+        if (index == indexOfDesertHex)
+        {
+            indexOffset = 1;
+        }
+
+        const size_t adjustedIndex = index + indexOffset;
+
+        if (tokens[index] == TOKEN_SIX || tokens[index] == TOKEN_EIGHT)
+        {
+            redTokenIndices[foundRedTokenCount] = adjustedIndex;
+            foundRedTokenCount += 1;
+        }
+    }
+
+    return !hasAdjacentRedTokens(redTokenIndices);
 }
 
 size_t generateIsland(const Texture textures[], Texture island[])
@@ -112,7 +244,10 @@ size_t generateIsland(const Texture textures[], Texture island[])
         TOKEN_TWELVE
     };
 
-    shuffleArray((int*)tokens, tokenCount);
+    do
+    {
+        shuffleArray((int*)tokens, tokenCount);
+    } while (!isValidIsland(tokens, indexOfDesertHex));
 
     for (size_t index = hexCount; index < polygonCount; index += 1)
     {
