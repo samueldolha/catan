@@ -1,4 +1,5 @@
 define sourceFiles
+generate-island
 generate-vertex-arrays
 load-program
 load-textures
@@ -9,6 +10,7 @@ run-application
 endef
 
 define headerFiles
+generate-island
 generate-vertex-arrays
 load-program
 load-textures

@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include "generate-island.h"
 #include "generate-vertex-arrays.h"
 #include "load-textures.h"
 #include "polygon.h"
@@ -132,26 +133,8 @@ void renderProgram(GLFWwindow *const window, const GLuint programIdentifier)
     Texture *textures = calloc(textureCount, sizeof(Texture));
     loadTextures(textures, textureIdentifiers);
 
-    Texture *const polygonTextures = calloc(polygonCount, sizeof(Texture));
-    polygonTextures[0] = textures[4];
-    polygonTextures[1] = textures[5];
-    polygonTextures[2] = textures[5];
-    polygonTextures[3] = textures[2];
-    polygonTextures[4] = textures[5];
-    polygonTextures[5] = textures[3];
-    polygonTextures[6] = textures[1];
-    polygonTextures[7] = textures[0];
-    polygonTextures[8] = textures[0];
-    polygonTextures[9] = textures[3];
-    polygonTextures[10] = textures[5];
-    polygonTextures[11] = textures[1];
-    polygonTextures[12] = textures[2];
-    polygonTextures[13] = textures[1];
-    polygonTextures[14] = textures[4];
-    polygonTextures[15] = textures[2];
-    polygonTextures[16] = textures[1];
-    polygonTextures[17] = textures[5];
-    polygonTextures[18] = textures[5];
+    Texture *const island = calloc(polygonCount, sizeof(Texture));
+    generateIsland(textures, island);
 
     Polygon *const polygons = calloc(polygonCount, sizeof(Polygon));
 
@@ -184,14 +167,14 @@ void renderProgram(GLFWwindow *const window, const GLuint programIdentifier)
         polygons[index].vertices.count = vertexCount;
         polygons[index].indices.data = indices;
         polygons[index].indices.count = indexCount;
-        polygons[index].texture = polygonTextures[index];
+        polygons[index].texture = island[index];
     }
 
     renderPolygons(window, programIdentifier, polygons);
 
     free(polygons);
 
-    free(polygonTextures);
+    free(island);
 
     glDeleteTextures(textureCount, textureIdentifiers);
 
