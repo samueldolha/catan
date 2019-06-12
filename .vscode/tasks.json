@@ -1,0 +1,28 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build Program",
+            "command": "make",
+            "osx": {
+                "command": "/usr/local/opt/make/libexec/gnubin/make"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean Program",
+            "command": "make",
+            "osx": {
+                "command": "/usr/local/opt/make/libexec/gnubin/make"
+            },
+            "args": [
+                "clean"
+            ],
+        }
+    ],
+    "version": "2.0.0"
+}
