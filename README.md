@@ -24,6 +24,9 @@ branch);
 - `make run` compiles and executes the application; and
 - `make clean` resets the directory to its original state.
 
+# Acknowledgements
+- [An Efficient Way to Draw Approximate Circles in OpenGL](http://slabode.exofire.net/circle_draw.shtml)
+
 # License
 
 [MIT](./LICENSE)
